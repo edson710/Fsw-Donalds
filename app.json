@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "0e90d5f2-576b-4983-860d-d042e4799159"
+      }
+    },
+    "android": {
+      "package": "com.edson710.fullstackweekdonalds"
+    }
+  }
+}
