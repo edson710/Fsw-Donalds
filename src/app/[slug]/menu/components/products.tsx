@@ -4,13 +4,14 @@ import Image from "next/image";
 
 interface ProductsProps {
     products: Product[];
+    slug: string;
 }
 
 const Products = ({ products }: ProductsProps) => {
     return (
         <div className="space-y-3 px-5">
             {products.map((product) => (
-                <a key={product.id} href="#" className="flex items-center justify-between gap-10 py-3">
+                <a key={product.id} href={`/${slug}/menu/${product.id}`} className="flex items-center justify-between gap-10 py-3">
                     {/* ESQUERDA */}
                     <div>
                         <h3 className="text-sm font-medium">{product.name}</h3>
