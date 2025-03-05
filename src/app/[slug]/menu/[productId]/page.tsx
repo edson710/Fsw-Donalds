@@ -1,28 +1,22 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { db } from "@/lib/prisma";
 
+import ProductHeader from "./components/product-header";
+
 interface ProductPageProps {
-  params: { slug: string; productId: string };
+  params: Promise<{ slug: string; productId: string }>;
 }
 
 const ProductPage = async ({ params }: ProductPageProps) => {
-  const { slug, productId } = params;
+  const { slug, productId } = await params;
   const product = await db.product.findUnique({ where: { id: productId } });
   if (!product) {
     return notFound();
   }
   return (
     <>
-      <div className="relative h-[300px] w-full">
-        <Image
-          src={product.imageUrl}
-          alt={product.name}
-          fill
-          className="object-contain"
-        />
-      </div>
+      <ProductHeader product={product} />
       <h1>Product page</h1>
       <p>{slug}</p>
       <p>{productId}</p>
