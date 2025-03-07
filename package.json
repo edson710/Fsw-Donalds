@@ -18,11 +18,13 @@
     "@shadcn/ui": "^0.0.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "expo": "^52.0.37",
     "lucide-react": "^0.474.0",
     "next": "15.1.6",
     "prisma": "^6.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-native": "^0.78.0",
     "shadcn-ui": "^0.9.4",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7"
