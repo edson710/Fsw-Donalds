@@ -2,6 +2,13 @@ import { Product } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(value);
+};
+
 interface ProductsProps {
   products: Product[];
   slug: string;
@@ -23,10 +30,7 @@ const Products = ({ products, slug }: ProductsProps) => {
               {product.description}
             </p>
             <p className="pt-3 text-sm font-semibold">
-              {new Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              }).format(product.price)}
+              {formatCurrency(product.price)}
             </p>
           </div>
 
