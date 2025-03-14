@@ -4,9 +4,12 @@ import { Prisma } from "@prisma/client";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { ChefHatIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+
+import CartSheet from "../../components/cart-sheet";
+import { CartContext } from "../../contexts/cart";
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat("pt-BR", {
@@ -25,10 +28,11 @@ interface ProductDetailsProps {
         };
       };
     };
-  }> ;
+  }>;
 }
 
 const ProductDetails = ({ product }: ProductDetailsProps) => {
+  const { toggleCart } = useContext(CartContext);
   const [quantity, setQuantity] = useState<number>(1);
 
   const handleDecreaseQuantity = () => {
@@ -38,8 +42,11 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
   const handleIncreaseQuantity = () => {
     setQuantity((prev) => prev + 1);
   };
-
+  const handleAddToCart = () => {
+    toggleCart();
+  };
   return (
+    <>
     <div className="relative z-50 flex h-full flex-col overflow-hidden rounded-t-3xl p-5">
       <div className="flex-auto overflow-hidden">
         {/* RESTAURANTE */}
@@ -81,7 +88,9 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
           </div>
         </div>
 
-        <ScrollArea className="max-h-[400px] overflow-auto"> {/* Ajustada a altura para reduzir o espaço em branco */}
+        <ScrollArea className="max-h-[400px] overflow-auto">
+          {" "}
+          {/* Ajustada a altura para reduzir o espaço em branco */}
           {/* SOBRE */}
           <div className="space-y-3">
             <h4 className="font-semibold">Sobre</h4>
@@ -89,7 +98,6 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
               {product.description}
             </p>
           </div>
-
           {/* INGREDIENTES */}
           <div className="mt-6 space-y-3">
             <div className="flex items-center gap-1">
@@ -100,15 +108,18 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
               {product.ingredients.map((ingredient) => (
                 <li key={ingredient}>{ingredient}</li>
               ))}
-
             </ul>
           </div>
         </ScrollArea>
       </div>
-
       {/* BOTÃO ADICIONAR */}
-      <Button className="w-full rounded-full">Adicionar à sacola</Button> {/* Ajustado o espaçamento */}
+      <Button className="w-full rounded-full" onClick={handleAddToCart}>
+        Adicionar à sacola
+      </Button>{" "}
+      {/* Ajustado o espaçamento */}
     </div>
+    <CartSheet />
+    </>
   );
 };
 
