@@ -8,8 +8,8 @@ import { useContext, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
-import CartSheet from "../../components/cart-sheet";
 import { CartContext } from "../../contexts/cart";
+import CartSheet from "./cart-sheet";
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat("pt-BR", {
