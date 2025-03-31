@@ -1,6 +1,7 @@
 import { Product } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat('pt-BR', {
@@ -15,12 +16,14 @@ interface ProductsProps {
 }
 
 const Products = ({ products, slug }: ProductsProps) => {
+  const SearchParams = useSearchParams();
+  const consumptionMethod = SearchParams.get("consumptionMethod");
   return (
     <div className="space-y-3 px-5">
       {products.map((product) => (
         <Link
           key={product.id}
-          href={`/${slug}/menu/${product.id}`}
+          href={`/${slug}/menu/${product.id}?consumptionMethod=${consumptionMethod}`}
           className="flex items-center justify-between gap-10 py-3"
         >
           {/* ESQUERDA */}

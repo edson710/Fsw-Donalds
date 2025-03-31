@@ -1,8 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2Icon } from "lucide-react";
+import { useParams, useSearchParams } from "next/navigation";
+import { useContext, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { PatternFormat } from "react-number-format";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -25,6 +29,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+
+import { createOrder } from "../actions/create-order";
+import { CartContext } from "../contexts/cart";
 
 // Função para validar CPF
 const isValidCpf = (cpf: string): boolean => {
@@ -73,11 +80,15 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 interface FinishOrderDialogProps {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-const FinishOrderDialog = ({open, onOpenChange}: FinishOrderDialogProps) => {
+const FinishOrderDialog = ({ open, onOpenChange }: FinishOrderDialogProps) => {
+  const { slug } = useParams<{ slug: string }>();
+  const { products } = useContext(CartContext);
+  const SearchParams = useSearchParams();
+  const [isPanding, startTransition] = useTransition()
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -86,17 +97,34 @@ const FinishOrderDialog = ({open, onOpenChange}: FinishOrderDialogProps) => {
     },
     shouldUnregister: true,
   });
- 
 
-  const onSubmit = (data: FormSchema) => {
-    console.log(data);
+  const onSubmit = async (data: FormSchema) => {
+    try {
+      const consumptionMethod = SearchParams.get(
+        "consumptionMethod",
+      ) as consumptionMethod;
+      startTransition(async () => {
+        await createOrder({
+          consumptionMethod,
+          customerCpf: data.cpf,
+          customerName: data.name,
+          products,
+          slug,
+        });
+        onOpenChange(false); 
+        toast.success("Pedido realizado com sucesso!");
+      });
+      
+      
+      
+    } catch (error) {
+      console.error("Error creating order:", error);
+    }
   };
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerTrigger asChild>
-        
-      </DrawerTrigger>
+      <DrawerTrigger asChild></DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>Finalizar Pedido</DrawerTitle>
@@ -129,21 +157,31 @@ const FinishOrderDialog = ({open, onOpenChange}: FinishOrderDialogProps) => {
                 <FormItem>
                   <FormLabel>CPF</FormLabel>
                   <FormControl>
-                    <PatternFormat placeholder="Digite seu CPF..." format="###.###.###.##"
-                    customInput={Input} 
-                    {...field}
+                    <PatternFormat
+                      placeholder="Digite seu CPF..."
+                      format="###.###.###.##"
+                      customInput={Input}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" variant="destructive" className="w-full rounded-full">
+            <Button
+              type="submit"
+              variant="destructive"
+              className="w-full rounded-full"
+              disabled={isPanding}
+            >
+              {isPanding && <Loader2Icon className="animate-spin"/>}
               Finalizar
             </Button>
             <DrawerFooter>
               <DrawerClose asChild>
-                <Button className="w-full rounded-full" variant="outline">Cancelar</Button>
+                <Button className="w-full rounded-full" variant="outline">
+                  Cancelar
+                </Button>
               </DrawerClose>
             </DrawerFooter>
           </form>
