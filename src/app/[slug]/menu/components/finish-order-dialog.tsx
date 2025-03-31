@@ -62,7 +62,6 @@ const formSchema = z.object({
   }),
   cpf: z
     .string()
-    .duration()
     .min(1, {
       message: "O CPF é obrigatório.",
     })
@@ -85,7 +84,9 @@ const FinishOrderDialog = ({open, onOpenChange}: FinishOrderDialogProps) => {
       name: "",
       cpf: "",
     },
+    shouldUnregister: true,
   });
+ 
 
   const onSubmit = (data: FormSchema) => {
     console.log(data);
